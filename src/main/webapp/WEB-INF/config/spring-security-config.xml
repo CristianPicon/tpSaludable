@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<security:http auto-config="true">
+	
+
+		<security:intercept-url pattern="/login.jsp"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/loginFail.jsp"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		
+		
+		
+		<security:intercept-url pattern="/paciente.do" access="ROLE_USER" />
+			
+		<security:form-login login-page="/login.do"
+			default-target-url="/paciente.do" 
+			
+			authentication-failure-url="/login.do?error" 
+			username-parameter="username"
+			password-parameter="password" />
+
+		<security:logout logout-success-url="/login.do?logout" />
+	</security:http>
+
+	<security:authentication-manager>
+
+		<security:authentication-provider
+			user-service-ref="myUserDetailServer">
+
+		</security:authentication-provider>
+
+	</security:authentication-manager>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost/base__saludable"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+
+	<bean id="myUserDetailServer"
+		class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+</beans>
